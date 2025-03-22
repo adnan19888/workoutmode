@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Babar is King</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="timer-container">
+        <h1> Babar is King</h1>
+        <div class="image-container">
+            <div class="image-box">
+                <img id="workout-image" src="workout.jpeg" alt="Workout Image">
+            </div>
+            <div class="image-box">
+                <img id="rest-image" src="rest.jpeg" alt="Rest Image">
+            </div>
+        </div>
+        <div id="timer-display">00:00</div>
+        <div class="controls-container">
+            <div class="control-group">
+                <label for="mode-select">Current Phase</label>
+                <select id="mode-select">
+                    <option value="workout">Workout (30s)</option>
+                    <option value="rest">Rest (10s)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="time-input">Number of Repetitions</label>
+                <input type="number" id="time-input" placeholder="Enter number of reps" min="1" />
+            </div>
+        </div>
+        <div class="button-group">
+            <button id="start-timer">Start Timer</button>
+            <button id="reset-timer">Reset Timer</button>
+        </div>
+        <div class="audio-notice">
+            <p>Click anywhere to enable sound notifications</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
