@@ -6,19 +6,13 @@ let currentMode = 'workout';
 let repetitionsLeft = 0;
 let totalRepetitions = 0;
 
-// Audio for notifications and background music
+// Audio for notifications
 const workoutEndSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
 const restEndSound = new Audio('https://assets.mixkit.co/active_storage/sfx/1434/1434-preview.mp3');
-const workoutMusic = new Audio('https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3');
-const restMusic = new Audio('https://assets.mixkit.co/active_storage/sfx/1434/1434-preview.mp3');
 
 // Configure sounds
-workoutEndSound.volume = 1.0;
-restEndSound.volume = 1.0;
-workoutMusic.volume = 0.3;
-restMusic.volume = 0.3;
-workoutMusic.loop = true;
-restMusic.loop = true;
+workoutEndSound.volume = 0.8;
+restEndSound.volume = 0.8;
 
 // Fixed intervals
 const WORKOUT_TIME = 30; // 30 seconds workout
@@ -30,12 +24,8 @@ document.getElementById('reset-timer').addEventListener('click', resetTimer);
 function stopAllSounds() {
     workoutEndSound.pause();
     restEndSound.pause();
-    workoutMusic.pause();
-    restMusic.pause();
     workoutEndSound.currentTime = 0;
     restEndSound.currentTime = 0;
-    workoutMusic.currentTime = 0;
-    restMusic.currentTime = 0;
 }
 
 function switchMode() {
@@ -45,15 +35,6 @@ function switchMode() {
 
     // Set the appropriate time based on mode
     timeLeft = currentMode === 'workout' ? WORKOUT_TIME : REST_TIME;
-
-    // Switch background music
-    if (currentMode === 'workout') {
-        workoutMusic.play().catch(error => console.log("Workout music failed:", error));
-        restMusic.pause();
-    } else {
-        restMusic.play().catch(error => console.log("Rest music failed:", error));
-        workoutMusic.pause();
-    }
 }
 
 function startTimer() {
@@ -76,22 +57,13 @@ function startTimer() {
         document.getElementById('mode-select').value = 'workout';
         document.getElementById('start-timer').textContent = 'Pause';
         document.getElementById('timer-display').style.color = '#4CAF50';
-        // Start workout music
         stopAllSounds();
-        workoutMusic.play().catch(error => console.log("Workout music failed:", error));
     } else if (isPaused) {
         isPaused = false;
         document.getElementById('start-timer').textContent = 'Pause';
-        // Resume appropriate music
-        if (currentMode === 'workout') {
-            workoutMusic.play().catch(error => console.log("Workout music failed:", error));
-        } else {
-            restMusic.play().catch(error => console.log("Rest music failed:", error));
-        }
     } else {
         isPaused = true;
         document.getElementById('start-timer').textContent = 'Resume';
-        // Pause all sounds
         stopAllSounds();
     }
 
@@ -168,7 +140,6 @@ function resetTimer() {
     totalRepetitions = 0;
     document.getElementById('start-timer').textContent = 'Start Timer';
     document.getElementById('timer-display').style.color = 'white';
-    // Stop all sounds when resetting
     stopAllSounds();
     updateDisplay();
 }
