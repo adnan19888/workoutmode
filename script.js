@@ -58,75 +58,64 @@ function startTimer() {
         document.getElementById('start-timer').textContent = 'Pause';
         document.getElementById('timer-display').style.color = '#4CAF50';
         stopAllSounds();
+        startTimerInterval();
     } else if (isPaused) {
         isPaused = false;
         document.getElementById('start-timer').textContent = 'Pause';
+        startTimerInterval();
     } else {
         isPaused = true;
         document.getElementById('start-timer').textContent = 'Resume';
+        clearInterval(timer);
         stopAllSounds();
     }
+}
 
-    if (!isPaused) {
-        timer = setInterval(() => {
-            if (timeLeft <= 0) {
-                clearInterval(timer);
+function startTimerInterval() {
+    clearInterval(timer); // Clear any existing interval
+    timer = setInterval(() => {
+        if (timeLeft <= 0) {
+            clearInterval(timer);
 
-                // Play appropriate end sound
-                if (currentMode === 'workout') {
-                    workoutEndSound.play().catch(error => console.log("Workout end sound failed:", error));
-                } else {
-                    restEndSound.play().catch(error => console.log("Rest end sound failed:", error));
-                }
-
-                if (currentMode === 'workout') {
-                    // Switch to rest mode
-                    switchMode();
-                    // Start the timer again for rest period
-                    timer = setInterval(() => {
-                        if (timeLeft <= 0) {
-                            clearInterval(timer);
-                            // Rest is over, check if we have more repetitions
-                            repetitionsLeft--;
-                            if (repetitionsLeft > 0) {
-                                // Start next workout
-                                currentMode = 'workout';
-                                document.getElementById('mode-select').value = 'workout';
-                                timeLeft = WORKOUT_TIME;
-                                document.getElementById('timer-display').style.color = '#4CAF50';
-                                // Start the timer again for workout period
-                                timer = setInterval(() => {
-                                    if (timeLeft <= 0) {
-                                        clearInterval(timer);
-                                        // Play workout end sound
-                                        workoutEndSound.play().catch(error => console.log("Workout end sound failed:", error));
-                                        // Switch to rest mode
-                                        switchMode();
-                                    }
-                                    timeLeft--;
-                                    updateDisplay();
-                                }, 1000);
-                            } else {
-                                // Workout complete
-                                isRunning = false;
-                                isPaused = false;
-                                document.getElementById('start-timer').textContent = 'Start Timer';
-                                document.getElementById('timer-display').style.color = 'white';
-                                stopAllSounds();
-                                alert('Workout complete!');
-                                return;
-                            }
-                        }
-                        timeLeft--;
-                        updateDisplay();
-                    }, 1000);
-                }
+            // Play appropriate end sound
+            if (currentMode === 'workout') {
+                workoutEndSound.play().catch(error => console.log("Workout end sound failed:", error));
+            } else {
+                restEndSound.play().catch(error => console.log("Rest end sound failed:", error));
             }
 
-            timeLeft--;
-            updateDisplay();
-        }, 1000);
-    }
+            if (currentMode === 'workout') {
+                // Switch to rest mode
+                switchMode();
+                // Start the timer again for rest period
+                startTimerInterval();
+            } else {
+                // Rest is over, check if we have more repetitions
+                repetitionsLeft--;
+                if (repetitionsLeft > 0) {
+                    // Start next workout
+                    currentMode = 'workout';
+                    document.getElementById('mode-select').value = 'workout';
+                    timeLeft = WORKOUT_TIME;
+                    document.getElementById('timer-display').style.color = '#4CAF50';
+                    // Start the timer again for workout period
+                    startTimerInterval();
+                } else {
+                    // Workout complete
+                    isRunning = false;
+                    isPaused = false;
+                    document.getElementById('start-timer').textContent = 'Start Timer';
+                    document.getElementById('timer-display').style.color = 'white';
+                    stopAllSounds();
+                    alert('Workout complete!');
+                    return;
+                }
+            }
+        }
+
+        timeLeft--;
+        updateDisplay();
+    }, 1000);
 }
 
 function resetTimer() {
